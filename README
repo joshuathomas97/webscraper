@@ -1,3 +1,12 @@
 This script scrapes all climbing shoes off epic.tv and their prices and puts them into a csv file.
 
-Idea is to monitor shoes for low prices in the correct size
+Ideas:
+-Automatically monitor shoes for low prices in the correct size
+-Compare to other websites
+-Find 10 cheapest shoes across a range of websites for certain size
+
+
+TO DO:
+-Filter by size/ price
+-If only displaying 10 shoes, include picture?
+-Build GUI so anyone can choose their size/ price range
