@@ -5,6 +5,10 @@
 """
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
+import re
+
+#specify price limit
+price_limit = 70
 
 filename = "climbingshoes.csv"
 f = open(filename, "w")
@@ -19,7 +23,7 @@ uClient.close()
 page_soup = soup(page_html, "html.parser")
 find_pages = page_soup.findAll("li", {"class":"pager-item desktop"})
 page_count = len(find_pages) + 1
-page = 0
+page = 8
 while page < page_count:
     my_url = 'https://shop.epictv.co.uk/en/category/climbing-shoes?page=' + str(page)
 
@@ -42,11 +46,18 @@ while page < page_count:
         name = product_name[0].text.strip()
 
         product_price = product.findAll("span", {"class":"price-value"})
-        price = product_price[0].text
+        price = product_price[0].text.replace('£','')
+        x = float(price)
+        if x < price_limit:
+            f.write(name + "," + price + "\n")
+
 
         #print("Shoe: " + name)
         #print("Price: " + price)
-        f.write(name + "," + price + "\n")
+
+
+#        print (int(price))
+
 
     f.close()
     page += 1
