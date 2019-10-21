@@ -35,8 +35,12 @@ while page < page_count:
 
     page_soup = soup(page_html, "html.parser") #telling it how to parse the file, here as an html source file
     products = page_soup.findAll("div", {"class":"product-item-row clearfix"})
-    #products = products[0]
 
+    #gets link
+    link = products[0].findAll("div", {"class":"field-name-title-field"})
+    print(link[0].a.attrs['href'])
+
+    ##########
     filename = "climbingshoes.csv"
     f = open(filename, "a")
 
@@ -45,11 +49,13 @@ while page < page_count:
         product_name = product.findAll("div", {"class":"field-name-title-field"})
         name = product_name[0].text.strip()
 
+
         product_price = product.findAll("span", {"class":"price-value"})
         price = product_price[0].text.replace('£','')
         x = float(price)
         if x < price_limit:
             f.write(name + "," + price + "\n")
+
 
 
         #print("Shoe: " + name)
