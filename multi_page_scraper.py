@@ -9,7 +9,6 @@ import re
 
 #specify price limit
 price_limit = 70
-
 filename = "climbingshoes.csv"
 f = open(filename, "w")
 headers = "Name, Price \n"
@@ -17,9 +16,8 @@ f.write(headers)
 
 website  = 'https://shop.epictv.co.uk/en/category/climbing-shoes'
 uClient = uReq(website) #essentially opens up url and downloads info
-page_html = uClient.read()
+page_html = uClient.read() #saves source code as this var
 uClient.close()
-
 page_soup = soup(page_html, "html.parser")
 find_pages = page_soup.findAll("li", {"class":"pager-item desktop"})
 page_count = len(find_pages) + 1
@@ -38,7 +36,9 @@ while page < page_count:
 
     #gets link
     link = products[0].findAll("div", {"class":"field-name-title-field"})
+    full_link = 'https://shop.epictv.co.uk' + str(link[0].a.attrs['href'])
     print(link[0].a.attrs['href'])
+
 
     ##########
     filename = "climbingshoes.csv"
@@ -48,22 +48,30 @@ while page < page_count:
 
         product_name = product.findAll("div", {"class":"field-name-title-field"})
         name = product_name[0].text.strip()
-
+        full_link = 'https://shop.epictv.co.uk' + str(product_name[0].a.attrs['href'])
 
         product_price = product.findAll("span", {"class":"price-value"})
         price = product_price[0].text.replace('£','')
         x = float(price)
         if x < price_limit:
+
+            uClient = uReq(full_link)
+            page2_html = uClient.read()
+            page2_soup = soup(page2_html, "html.parser")
+            sizes = page2_soup.findAll("div", {"class":"size-link-wrapper"})
+            if float(sizes[0].text) < 5:
+                print('first size is less than 5. Need to loop through')
+            #sizes come in order so just end the loop if contains +<10
+
             f.write(name + "," + price + "\n")
 
 
-
+#sizes[20].text
         #print("Shoe: " + name)
         #print("Price: " + price)
 
 
 #        print (int(price))
-
 
     f.close()
     page += 1
