@@ -7,9 +7,12 @@ from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 import re
 
-#specify price limit
+#set vars
 price_limit = 70
-min_size = 8
+min_size = 8 #minimum shoe size?
+page = 1 #what page do you want to start from?
+
+
 filename = "climbingshoes.csv"
 f = open(filename, "w")
 headers = "Name, Price, Link \n"
@@ -20,10 +23,9 @@ uClient = uReq(website) #essentially opens up url and downloads info
 page_html = uClient.read() #saves source code as this var
 uClient.close()
 page_soup = soup(page_html, "html.parser")
-find_pages = page_soup.findAll("li", {"class":"pager-item desktop"})
-page_count = len(find_pages) + 1
-page = 8
-while page < page_count:
+find_pages = page_soup.findAll("li", {"class":"pager-last desktop"})
+page_total = int(find_pages[0].a.text)
+while page < page_total:
     my_url = 'https://shop.epictv.co.uk/en/category/climbing-shoes?page=' + str(page)
 
     uClient = uReq(my_url) #essentially opens up url and downloads info
@@ -46,7 +48,7 @@ while page < page_count:
     f = open(filename, "a")
 
     for idx, product in enumerate(products): #idx gives location (from 0)
-        print('count is', idx+1)
+    #    print('count is', idx+1)
 
         product_name = product.findAll("div", {"class":"field-name-title-field"})
         name = product_name[0].text.strip()
@@ -61,18 +63,17 @@ while page < page_count:
             page2_html = uClient.read()
             page2_soup = soup(page2_html, "html.parser")
             sizes = page2_soup.findAll("div", {"class":"size-link-wrapper"})
-            Lsize = re.findall("\d+", sizes[-1].text)
-            print(Lsize)
-            if float(Lsize[0]) > min_size:
-                Fsize = re.findall("\d+", sizes[0].text)
-                print('First:', Fsize, 'Last:', Lsize)
-                if float(Fsize[0]) > float(Lsize[0]) or float(Lsize[0])>13:
-                    print(name, 'number', idx+1, 'must be kids shoe')
-                else:
-                    print(name, 'Smallest size:', Fsize, 'Largest size:',
-                    Lsize, 'Is a winner')
-                    #print(name, price, full_link)
-                    f.write(name + "," + price + "," + full_link  + "\n")
+            if len(sizes)>0:
+                Lsize = re.findall("\d+", sizes[-1].text)
+    #            print(Lsize)
+                if float(Lsize[0]) > min_size:
+                    Fsize = re.findall("\d+", sizes[0].text)
+    #                print('First:', Fsize, 'Last:', Lsize)
+                    if float(Fsize[0]) > float(Lsize[0]) or float(Lsize[0])>13:
+    #                    print(name, 'number', idx+1, 'must be kids shoe')
+                        None
+                    else:
+                        f.write(name + "," + price + "," + full_link  + "\n")
 
 
 
