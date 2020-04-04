@@ -18,13 +18,13 @@ f = open(filename, "w")
 headers = "Name, Price, Link \n"
 f.write(headers)
 
-website  = 'https://shop.epictv.co.uk/en/category/climbing-shoes'
+website  = 'https://shop.epictv.co.uk/en/sale/outlet/climbing-shoes-outlet'
 uClient = uReq(website) #essentially opens up url and downloads info
 page_html = uClient.read() #saves source code as this var
 uClient.close()
 page_soup = soup(page_html, "html.parser")
-find_pages = page_soup.findAll("li", {"class":"pager-last desktop"})
-page_total = int(find_pages[0].a.text)
+find_pages = page_soup.findAll("li", {"class":"pager-item desktop"})
+page_total = len(find_pages) + 1
 while page < page_total:
     my_url = 'https://shop.epictv.co.uk/en/category/climbing-shoes?page=' + str(page)
 
