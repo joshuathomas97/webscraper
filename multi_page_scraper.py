@@ -9,9 +9,10 @@ import re
 
 #specify price limit
 price_limit = 70
+min_size = 8
 filename = "climbingshoes.csv"
 f = open(filename, "w")
-headers = "Name, Price \n"
+headers = "Name, Price, Link \n"
 f.write(headers)
 
 website  = 'https://shop.epictv.co.uk/en/category/climbing-shoes'
@@ -44,7 +45,8 @@ while page < page_count:
     filename = "climbingshoes.csv"
     f = open(filename, "a")
 
-    for product in products:
+    for idx, product in enumerate(products): #idx gives location (from 0)
+        print('count is', idx+1)
 
         product_name = product.findAll("div", {"class":"field-name-title-field"})
         name = product_name[0].text.strip()
@@ -59,11 +61,25 @@ while page < page_count:
             page2_html = uClient.read()
             page2_soup = soup(page2_html, "html.parser")
             sizes = page2_soup.findAll("div", {"class":"size-link-wrapper"})
-            if float(sizes[0].text) < 5:
-                print('first size is less than 5. Need to loop through')
+            Lsize = re.findall("\d+", sizes[-1].text)
+            print(Lsize)
+            if float(Lsize[0]) > min_size:
+                Fsize = re.findall("\d+", sizes[0].text)
+                print('First:', Fsize, 'Last:', Lsize)
+                if float(Fsize[0]) > float(Lsize[0]) or float(Lsize[0])>13:
+                    print(name, 'number', idx+1, 'must be kids shoe')
+                else:
+                    print(name, 'Smallest size:', Fsize, 'Largest size:',
+                    Lsize, 'Is a winner')
+                    #print(name, price, full_link)
+                    f.write(name + "," + price + "," + full_link  + "\n")
+
+
+
+
+
             #sizes come in order so just end the loop if contains +<10
 
-            f.write(name + "," + price + "\n")
 
 
 #sizes[20].text
