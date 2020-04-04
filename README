@@ -3,16 +3,16 @@ This script scrapes all climbing shoes off epic.tv and their prices and puts the
 Ideas:
 -Automatically monitor shoes for low prices in the correct size
 -Compare to other websites
--Find 10 cheapest shoes across a range of websites for certain size
 -Make website so anyone can access
 -Update daily so people just need to filter and not submit the request live
 
 
 TO DO:
--Filter by size/ price
+-Filter by size/ price. DONE
+    -Need to filter when size is listed but out of stock
 -If only displaying 10 shoes, include picture?
 -Build GUI so anyone can choose their size/ price range
 -Make inputs in cmd line for price, size etc
 -open excel on completion
--search for clearance
--find link
+-search for clearance. DONE
+-find link. DONE
